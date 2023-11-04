@@ -1,0 +1,233 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Book GIFs</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+    }
+
+    #header {
+      padding: 20px;
+    }
+
+    #search-box {
+      width: 300px;
+      margin: 0 auto;
+    }
+
+    #gifs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .gif {
+      width: 200px;
+      margin: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .gif img {
+      width: 100%;
+      height: 100%;
+    }
+    
+    body {
+  background-color: #fff;
+  font-family: "Open Sans", sans-serif;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#search-box {
+  width: 300px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#search-button {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#description, #cover-image {
+  padding: 10px;
+}
+
+#gifs {
+  margin-top: 20px;
+}
+
+.gif {
+  width: 200px;
+  height: 150px;
+  margin: 10px;
+  border: 1px solid #ccc;
+}
+
+.gif img {
+  width: 100%;
+  height: 100%;
+}
+
+    #author {
+      margin: 10px 0;
+    }
+
+    #description {
+        margin: 10 auto;
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 10px 140px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+
+    }
+
+    #description h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+    #cover-image {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    #search-button {
+      background-color: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Book GIFs</h1>
+  </header>
+
+  <input type="search" id="search-box" placeholder="Enter a book title">
+  <button type="button" id="search-button">Search</button>
+
+  <div id="author"></div>
+  <div id="description"></div>
+  <div id="cover-image"></div>
+  <div id="gifs"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#search-button").click(function() {
+        var bookTitle = $("#search-box").val();
+
+        // Get the book information from the Google Books API.
+        $.ajax({
+          url: "https://www.googleapis.com/books/v1/volumes?q=" + bookTitle,
+          method: "GET",
+          headers: {
+            "Authorization": "AIzaSyBEUuHQ9PkCdk4WJFxjx6gnBU9IFMp682I"
+          },
+          success: function(data) {
+            // Get the author, description, and cover image of the book.
+            var author = data.items[0].volumeInfo.authors[0];
+            var description = data.items[0].volumeInfo.description;
+            var coverImage = data.items[0].volumeInfo.imageLinks.thumbnail;
+
+            // Display the author, description, and cover image.
+            $("#author").html("Author: " + author);
+            $("#description").html(description);
+            $("#cover-image").html("<img src='" + coverImage + "' />");
+
+            $.ajax({
+              url: "https://api.giphy.com/v1/gifs/search?api_key=N7ya8VL0OnkWRPYQQ4AkLYdpBXJ4JzAj&q=" + bookTitle,
+              method: "GET",
+              success: function(data) {
+                // Display the GIFs.
+                $("#gifs").html("");
+                for (var i = 0; i < 8; i++) {
+                  var gif = data.data[i];
+                  $("#gifs").append("<div class='gif'><img src='" + gif.images.fixed_height.url + "' /></div>");
+                }
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> -->
+<!-- #api key for movie="c20f0461c60da9ea8d1cbf3a9869f839" -->
+<!-- api key for gif="cMaRucgq3PWBZm28xXipd925kOPKYw8C" -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Information</title>
+  <style>
+    /* Your CSS styles here */
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Movie Information</h1>
+  </header>
+
+  <input type="search" id="search-box" placeholder="Enter a movie title">
+  <button type="button" id="search-button">Search</button>
+
+  <div id="movie-info"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#search-button").click(function() {
+        var movieTitle = $("#search-box").val();
+
+        // TMDb API endpoint with your TMDb API key
+        var tmdbApiKey = "d98dd082f14fc55da6bc4e7af1f96451"; // Replace with your actual TMDb API key
+        var tmdbApiEndpoint = "https://api.themoviedb.org/3/search/movie?api_key=" + tmdbApiKey + "&query=" + movieTitle;
+
+        // Clear previous results
+        $("#movie-info").empty();
+
+        // Get movie information using the TMDb API.
+        $.ajax({
+          url: tmdbApiEndpoint,
+          method: "GET",
+          success: function(data) {
+            if (data.results.length > 0) {
+              var movie = data.results[0];
+              var movieInfo = `
+                <h2>${movie.title} (${movie.release_date.substr(0, 4)})</h2>
+                <p>${movie.overview}</p>
+                <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title} Poster">
+              `;
+              $("#movie-info").html(movieInfo);
+            } else {
+              $("#movie-info").html("Movie not found.");
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

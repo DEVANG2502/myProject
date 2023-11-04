@@ -1,0 +1,164 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Information & GIFs</title>
+ <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background-color: #151515;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin: 0;
+  }
+
+  input[type="search"] {
+    padding: 10px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 10px;
+  }
+
+  button[type="button"] {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  button[type="button"]:hover {
+    background-color: #555;
+  }
+
+  #movie-info {
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  #movie-info h2 {
+    font-size: 24px;
+    margin: 0 0 10px;
+  }
+
+  #movie-info p {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  #movie-info img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  #gifs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .gif {
+    margin: 10px;
+  }
+
+  .gif img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+  }
+
+  .gif img:hover {
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Movie Information & GIFs</h1>
+  </header>
+
+  <input type="search" id="search-box" placeholder="Enter a movie title">
+  <button type="button" id="search-button">Search</button>
+
+  <div id="movie-info"></div>
+  <div id="gifs"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#search-button").click(function() {
+        var movieTitle = $("#search-box").val();
+
+        // TMDb API endpoint with your TMDb API key
+        var tmdbApiKey = "d98dd082f14fc55da6bc4e7af1f96451"; //
+        var tmdbApiEndpoint = "https://api.themoviedb.org/3/search/movie?api_key=" + tmdbApiKey + "&query=" + movieTitle;
+
+        // Giphy API endpoint with your Giphy API key
+        var giphyApiKey = "cMaRucgq3PWBZm28xXipd925kOPKYw8C";
+        var giphyApiEndpoint = "https://api.giphy.com/v1/gifs/search?api_key=" + giphyApiKey + "&q=" + movieTitle;
+
+        // Clear previous results
+        $("#movie-info").empty();
+        $("#gifs").empty();
+
+        // Get movie information using the TMDb API.
+        $.ajax({
+          url: tmdbApiEndpoint,
+          method: "GET",
+          success: function(data) {
+            if (data.results.length > 0) {
+              var movie = data.results[0];
+              var movieInfo = `
+                <h2>${movie.title} (${movie.release_date.substr(0, 4)})</h2>
+                <p>${movie.overview}</p>
+                <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title} Poster">
+              `;
+              $("#movie-info").html(movieInfo);
+            } else {
+              $("#movie-info").html("Movie not found.");
+            }
+          }
+        });
+
+        // Get GIFs using the Giphy API.
+        $.ajax({
+          url: giphyApiEndpoint,
+          method: "GET",
+          success: function(data) {
+            for (var i = 0; i < data.data.length; i++) {
+              var gif = data.data[i];
+              $("#gifs").append("<div class='gif'><img src='" + gif.images.fixed_height.url + "' /></div>");
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> 
+
+
+
+
+
+
